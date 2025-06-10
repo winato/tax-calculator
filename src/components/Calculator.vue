@@ -1,77 +1,71 @@
 <template>
-  <div class="calculator">
-    <h1 class="title">
-      Calculator
-    </h1>
-    <p  class="description">
-      If you have some shares here you can try to calculate the total amount you have
-    </p>
-    <form class="form">
-      <div class="input-wrapper">
-        <label>
-          Shares Amount
-          <input 
-            type="number"
-            v-model="sharesAmount" 
-            min="0"
-          >
-        </label>
-      </div>
-      <div class="input-wrapper">
-        <label>
-          Share Price
-          <input
-            type="number"
-            min="0"
-            v-model="sharePrice"
-          >
-        </label>
-      </div>
-      <div class="input-wrapper">
-        <label>
-          Ruling
-          <input
-            type="checkbox"
-            min="0"
-            v-model="hasRuling"
-          >
-        </label>
-      </div>
-    </form>
-    <p>
-      Income: <i>{{ income }}</i>
-    </p>
-    <p>
-      Result: <b>{{ result }}</b>
-    </p>
+  <div class="container">
+    <h1>Calculator RSU (Netherlands)</h1>
+
+    <div class="input-group">
+      <label>Amount RSU:</label>
+      <input type="number" v-model.number="rsuCount" min="0" />
+    </div>
+
+    <div class="input-group">
+      <label>Price for one RSU (€):</label>
+      <input type="number" v-model.number="rsuPrice" min="0" />
+    </div>
+
+    <div class="input-group checkbox">
+      <input type="checkbox" id="ruling" v-model="hasRuling" />
+      <label for="ruling">I have 30% ruling</label>
+    </div>
+
+    <hr />
+
+    <div class="result">
+      <p><strong>Gross total:</strong> €{{ grossAmount.toFixed(2) }}</p>
+      <p><strong>Taxable amount:</strong> €{{ taxableAmount.toFixed(2) }}</p>
+      <p><strong>Tax (~39.21%):</strong> €{{ taxAmount.toFixed(2) }}</p>
+      <p><strong>Nett income:</strong> €{{ netAmount.toFixed(2) }}</p>
+    </div>
   </div>
 </template>
 
 <script setup>
 import { ref, computed } from 'vue'
 
-const sharesAmount = ref(0);
-const sharePrice = ref(0);
-const hasRuling = ref(true);
+const rsuCount = ref(0)
+const rsuPrice = ref(0)
+const hasRuling = ref(false)
 
-const income = computed(() => (sharesAmount.value * sharePrice.value).toFixed(2));
-const minusRuling = computed(() => (income.value * (hasRuling.value ? 0.33 : 0)).toFixed(2));
-const taxableIncome = computed(() => income.value - minusRuling.value);
-const incumeTax = computed(() => taxableIncome.value * 0.56);
-const result = computed(() => (income.value - incumeTax.value).toFixed(2));
+const grossAmount = computed(() => rsuCount.value * rsuPrice.value)
 
+const taxableAmount = computed(() => {
+  return hasRuling.value ? grossAmount.value * 0.7 : grossAmount.value
+})
+
+const taxRate = 0.3921
+
+const taxAmount = computed(() => taxableAmount.value * taxRate)
+const netAmount = computed(() => grossAmount.value - taxAmount.value)
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-  .calculator {
-    max-width: 720px;
-    margin: 0 auto;
-    text-align: center;
-  }
-
-  .input-wrapper {
-    margin: 5px;
-  }
-  
+.container {
+  max-width: 500px;
+  margin: auto;
+  padding: 2rem;
+  font-family: Arial, sans-serif;
+}
+.input-group {
+  margin-bottom: 1rem;
+}
+input[type="number"] {
+  width: 100%;
+  padding: 0.5rem;
+}
+.checkbox {
+  display: flex;
+  align-items: center;
+}
+.result p {
+  font-size: 1.1rem;
+}
 </style>

@@ -29,7 +29,7 @@
       </div>
       <div class="input-wrapper">
         <label>
-          Has Ruling
+          Ruling
           <input
             type="checkbox"
             min="0"
@@ -40,9 +40,6 @@
     </form>
     <p>
       Income: <i>{{ income }}</i>
-    </p>
-    <p>
-      Ruling Amount: <i>{{ minusRuling }}</i>
     </p>
     <p>
       Result: <b>{{ result }}</b>
